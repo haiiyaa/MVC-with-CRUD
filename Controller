@@ -1,0 +1,177 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using flyveruter.Models;
+
+namespace flyveruter.Controllers
+{
+    public class MyAirportController : Controller
+    {
+        private FlyverturContext db = new FlyverturContext();
+
+        // GET: /MyAirport/
+        // Version 10.0.2
+
+        public string GotoAdmin()
+        {
+
+            return "Admin page";
+        
+        }
+
+        public ActionResult Login()
+        {
+            if (Session["username"]!=null)
+            {
+                return Redirect("Admin");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        public ActionResult Admin()
+        {
+            return View(db.flyveture.ToList());
+        }
+
+        public ActionResult Logout()
+        {
+            Session["username"] = null;
+            Session["userpassword"] = null;
+                
+            return RedirectToAction("Index","MyAirport");
+        }
+
+
+        public ActionResult UserLogin(string username, string userpassword)
+        {
+            if (username == "gedeost" && userpassword == "smagergodt")
+            {
+                Session["username"] = username;
+                Session["userpassword"] = userpassword;
+                return Redirect("Admin");
+            }
+            else
+            {
+                return RedirectToAction("Index","MyAirport");
+            }
+            
+        }        
+
+        public ActionResult Index()
+        {
+            return View(db.flyveture.ToList());
+        }
+
+        // GET: /MyAirport/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Flyvetur flyvetur = db.flyveture.Find(id);
+            if (flyvetur == null)
+            {
+                return HttpNotFound();
+            }
+            return View(flyvetur);
+        }
+
+        // GET: /MyAirport/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: /MyAirport/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include="ID,startplace,endplace,maschineType,StartTime,arrivelLocalTime")] Flyvetur flyvetur)
+        {
+            if (ModelState.IsValid)
+            {
+                db.flyveture.Add(flyvetur);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(flyvetur);
+        }
+
+        // GET: /MyAirport/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Flyvetur flyvetur = db.flyveture.Find(id);
+            if (flyvetur == null)
+            {
+                return HttpNotFound();
+            }
+            return View(flyvetur);
+        }
+
+        // POST: /MyAirport/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include="ID,startplace,endplace,maschineType,StartTime,arrivelLocalTime")] Flyvetur flyvetur)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(flyvetur).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(flyvetur);
+        }
+
+        // GET: /MyAirport/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Flyvetur flyvetur = db.flyveture.Find(id);
+            if (flyvetur == null)
+            {
+                return HttpNotFound();
+            }
+            return View(flyvetur);
+        }
+
+        // POST: /MyAirport/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Flyvetur flyvetur = db.flyveture.Find(id);
+            db.flyveture.Remove(flyvetur);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}
