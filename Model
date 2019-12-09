@@ -1,0 +1,31 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
+
+namespace flyveruter.Models
+{
+    public class Flyvetur
+    {
+        public int ID {get; set; }
+        [Required]
+        [Display(Name="Angiv start sted")]
+        public string startplace { get; set; }
+        [Display(Name = "Angiv destinations sted")]
+        public string endplace { get; set; }
+        [Display(Name = "Maskine type")]
+        public string maschineType { get; set; }
+        [Display(Name = "Start Time")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
+        public DateTime? StartTime { get; set; }
+        [Display(Name = "Arrivel localtime")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
+        public DateTime? arrivelLocalTime { get; set; }
+    }
+
+    public class FlyverturContext : DbContext
+    {
+        public DbSet<Flyvetur> flyveture { get; set; }
+    }
+  }
